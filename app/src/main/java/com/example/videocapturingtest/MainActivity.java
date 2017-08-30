@@ -234,9 +234,9 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
         }
 
         Intent prevIntent = getIntent();
-        if (prevIntent.hasExtra("audio")) {
-            duration = prevIntent.getDoubleExtra("duration", 6.5);
-        }
+//        if (prevIntent.hasExtra("audio")) {
+            duration = prevIntent.getDoubleExtra("duration", 4);
+//        }
 
         progressBar = findViewById(R.id.progress_bar);
 
@@ -853,7 +853,7 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
     }
 
     private int getStartCount() {
-        return 3;
+        return 5;
     }
 
     private void startCountDownAnimation() {
@@ -886,7 +886,7 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
             @Override
             public void run() {
                 ivGetReady.setVisibility(View.INVISIBLE);
-                progressBarToRight(3000);
+                progressBarToRight(5000);
                 countDownAnimation.start();
             }
         }, 1000);
