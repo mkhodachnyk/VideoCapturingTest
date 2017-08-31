@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -186,6 +187,8 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
 
         setState(CAMERA_STATE.CLOSING);
 
+        setOrientationListener(false);
+
         stopBackgroundThread();
 
         closeCamera();
@@ -208,6 +211,8 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
             showAlertDialog("Fail to initialize SCamera.", true);
             return;
         }
+
+        setOrientationListener(true);
 
         if (!checkRequiredFeatures()) return;
 
@@ -445,6 +450,15 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
                 }
             });
 
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mTextureView.setAspectRatio(
+                        mPreviewSize.getWidth(), mPreviewSize.getHeight());
+            } else {
+                mTextureView.setAspectRatio(
+                        mPreviewSize.getHeight(), mPreviewSize.getWidth());
+            }
+
             prepareMediaRecorder();
 
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
@@ -629,7 +643,6 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
      * Prepares the media recorder to begin recording.
      */
     private void prepareMediaRecorder() throws IOException {
-
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
 
@@ -639,6 +652,7 @@ public class MainActivity extends Activity implements CountDownAnimation.CountDo
         mMediaRecorder.setOutputFile(new File(getExternalFilesDir(null), "temp.mp4").getAbsolutePath());
         mMediaRecorder.setMaxDuration(30000);
 //        mMediaRecorder.setMaxFileSize(5000000); // Approximately 5 megabytes
+        mMediaRecorder.setOrientationHint(getJpegOrientation());
         mMediaRecorder.prepare();
     }
 
